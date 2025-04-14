@@ -2,18 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.myproject.bookstore;
+package com.myproject.bookstore.entity;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  *
@@ -48,6 +50,8 @@ public class Books implements Serializable {
     @Basic(optional = false)
     @Column(name = "book_price")
     private Double bookPrice;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "books")
+    private Collection<OrderItems> orderItemsCollection;
 
     public Books() {
     }
@@ -117,6 +121,14 @@ public class Books implements Serializable {
 
     public void setBookPrice(Double bookPrice) {
         this.bookPrice = bookPrice;
+    }
+
+    public Collection<OrderItems> getOrderItemsCollection() {
+        return orderItemsCollection;
+    }
+
+    public void setOrderItemsCollection(Collection<OrderItems> orderItemsCollection) {
+        this.orderItemsCollection = orderItemsCollection;
     }
 
     @Override

@@ -3,6 +3,10 @@
   <persistence-unit name="com.myproject_bookstore_jar_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.myproject.bookstore.Books</class>
+    <class>com.myproject.bookstore.entity.Books</class>
+    <class>com.myproject.bookstore.entity.Orders</class>
+    <class>com.myproject.bookstore.entity.Customers</class>
+    <class>com.myproject.bookstore.entity.OrderItems</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="${DB_URL}"/>
       <property name="javax.persistence.jdbc.user" value="${DB_USER}"/>

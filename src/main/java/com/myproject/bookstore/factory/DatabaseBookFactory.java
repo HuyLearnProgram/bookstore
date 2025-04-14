@@ -2,19 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.myproject.bookstore;
+package com.myproject.bookstore.factory;
 
-import java.sql.*;
+import com.myproject.bookstore.entity.Books;
+import com.myproject.bookstore.singleton.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author pc
  */
-
-
-public class BookFactory {
-    public static List<Books> getBooksFromDb() {
+public class DatabaseBookFactory extends BookFactory {
+    @Override
+    public List<Books> createBooks() {
         List<Books> books = new ArrayList<>();
 
         try {
@@ -42,6 +47,7 @@ public class BookFactory {
         }
 
         return books;
+        
     }
+    
 }
-
