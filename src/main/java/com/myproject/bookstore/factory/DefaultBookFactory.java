@@ -10,7 +10,10 @@ import com.myproject.bookstore.entity.Books;
  *
  * @author pc
  */
+public class DefaultBookFactory implements BookFactory {
 
-public interface BookFactory {
-    Books createBook(String isbn, String title, String author, String image, String descr, double price);
+    @Override
+    public Books createBook(String isbn, String title, String author, String image, String descr, double price) {
+        return new Books(isbn, title, author, image, descr, price);
+    }
 }

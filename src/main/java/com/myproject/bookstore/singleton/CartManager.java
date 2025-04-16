@@ -5,7 +5,9 @@
 package com.myproject.bookstore.singleton;
 
 import com.myproject.bookstore.entity.CartItem;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,9 +29,11 @@ public class CartManager {
 
     // Thread-safe Singleton (Double-checked locking)
     public static CartManager getInstance() {
-        synchronized (CartManager.class) {
-            if (instance == null) {
-                instance = new CartManager();
+        if (instance == null) {                 // first check (without lock)
+            synchronized (CartManager.class) {
+                if (instance == null) {         // second check (with lock)
+                    instance = new CartManager();
+                }
             }
         }
         return instance;
@@ -84,5 +88,49 @@ public class CartManager {
         return cartItems.values().stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum();
+    }
+    public void printCartSummary() {
+        System.out.println("           CART SUMMARY         ");
+        System.out.println("===================================");
+        System.out.printf("| %-20s | %3s | %10s | %8s |\n", "Title", "Qty", "Price/item", "Subtotal");
+        System.out.println("|----------------------|-----|------------|----------|");
+
+        for (CartItem item : cartItems.values()) {
+            String title = item.getBook().getBookTitle();
+            int qty = item.getQuantity();
+            double price = item.getBook().getBookPrice();
+            double subtotal = item.getTotalPrice();
+
+            // Chia title thành các dòng nếu dài > 20 ký tự
+            List<String> titleLines = splitTitle(title, 20);
+
+            for (int i = 0; i < titleLines.size(); i++) {
+                String line = titleLines.get(i);
+                if (i == 0) {
+                    // Dòng đầu tiên in đủ thông tin
+                    System.out.printf("| %-20s | %3d | %10.2f | %8.2f |\n", line, qty, price, subtotal);
+                } else {
+                    // Các dòng sau chỉ in tiếp phần title
+                    System.out.printf("| %-20s |     |            |          |\n", line);
+                }
+            }
+        }
+
+        System.out.println("--------------------------------------------------------");
+        System.out.printf("| %-20s | %3d | %10s | %8.2f |\n",
+                          "TOTAL",
+                          getTotalQuantity(),
+                          "",
+                          getTotalPrice());
+        System.out.println("===================================");
+    }
+
+    // Helper để chia title thành dòng dài 20 ký tự
+    private List<String> splitTitle(String title, int maxLength) {
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < title.length(); i += maxLength) {
+            lines.add(title.substring(i, Math.min(i + maxLength, title.length())));
+        }
+        return lines;
     }
 }

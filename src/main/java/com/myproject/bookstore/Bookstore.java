@@ -9,8 +9,11 @@ import com.myproject.bookstore.entity.Books;
 import com.myproject.bookstore.entity.CartItem;
 import com.myproject.bookstore.factory.BookDAO;
 import com.myproject.bookstore.factory.DatabaseBookDAO;
-import com.myproject.bookstore.factory.DatabaseBookFactory;
+import com.myproject.bookstore.factory.DefaultBookFactory;
+import com.myproject.bookstore.factory.BookDAOFactory;
+import com.myproject.bookstore.factory.MockBookDAO;
 import com.myproject.bookstore.singleton.CartManager;
+import com.myproject.bookstore.singleton.SessionManager;
 import java.util.List;
 import java.util.Map;
 
@@ -20,43 +23,36 @@ import java.util.Map;
  */
 public class Bookstore {
 
-    public static void main(String[] args) {
-//        BookFactory factory = new DatabaseBookFactory(); // Hoặc new JsonBookFactory();
-        BookDAO bookDAO = new DatabaseBookDAO();
-//        List<Books> books = bookDAO.findBooksByTitle("Doing Good By Doing Good");
-//        Books book = books.get(0);
-//        book.setBookPrice(40.5);
-//        boolean isupdate = bookDAO.updateBook(book);
-//        System.out.println(book);
-//        System.out.println(isupdate);
+    public static void main(String[] args) throws InterruptedException {
 
-        CartManager cartManager = CartManager.getInstance();
+        SessionManager session = SessionManager.getInstance();
 
-        // Tạo sách
-        Books book1 = bookDAO.findBooksByTitle("Doing Good By Doing Good").get(0);
-        Books book2 = bookDAO.findBooksByAuthor("Thomas H. Cormen").get(0);
-        
-        // Thêm sách vào giỏ
-        cartManager.addToCart(new CartItem(book1, 2)); // 2 quyển Java
-        cartManager.addToCart(new CartItem(book2, 1)); // 1 quyển Python
+        // Đăng nhập
+        session.login("huy123", "admin");
 
-        // Cập nhật số lượng
-        cartManager.updateQuantity(book1.getBookIsbn(), 3); // update Java thành 3 quyển
-
-        // In giỏ hàng
-        System.out.println("Gio hang hien tai:");
-        for (Map.Entry<String, CartItem> entry : cartManager.getCartItems().entrySet()) {
-            CartItem item = entry.getValue();
-            Books book = item.getBook();
-            System.out.printf("ISBN: %s | Book Title: %s | Quantity: %d | Total Price: %.2f\n",
-                    book.getBookIsbn(),
-                    book.getBookTitle(),
-                    item.getQuantity(),
-                    item.getTotalPrice());
+        // Kiểm tra trạng thái đăng nhập
+        if (session.isLoggedIn()) {
+            System.out.println("User is logged in.");
+            System.out.println("User ID: " + session.getUserId());
+            System.out.println("Role: " + session.getRole());
+            System.out.println("Login Time: " + new java.util.Date(session.getLoginTimestamp()));
         }
 
-        // In tổng số lượng và tổng giá trị
-        System.out.println("Total Quantity: " + cartManager.getTotalQuantity());
-        System.out.println("Total: $" + cartManager.getTotalPrice());
+        // Mô phỏng thời gian trôi qua (31 phút)
+        Thread.sleep(1000); // demo nhanh, có thể bỏ hoặc sửa thành 31 phút thật
+
+        // Kiểm tra phiên có hết hạn không
+        if (session.isSessionExpired()) {
+            System.out.println("Session expired!");
+        } else {
+            System.out.println("Session is still active.");
+        }
+
+        // Đăng xuất
+        session.logout();
+
+        // Kiểm tra lại
+        System.out.println("Is logged in? " + session.isLoggedIn());
+    
     }
 }

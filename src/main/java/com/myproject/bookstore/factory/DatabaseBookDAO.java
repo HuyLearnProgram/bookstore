@@ -18,6 +18,13 @@ import java.util.List;
  * @author pc
  */
 public class DatabaseBookDAO implements BookDAO{
+    private final BookFactory bookFactory;
+
+    // Constructor nhận BookFactory
+    public DatabaseBookDAO(BookFactory bookFactory) {
+        this.bookFactory = bookFactory;
+    }
+    
     // ✅ Cập nhật sách
     @Override
     public boolean updateBook(Books book) {
@@ -66,7 +73,7 @@ public class DatabaseBookDAO implements BookDAO{
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Books book = new Books(
+                Books book = bookFactory.createBook(
                     rs.getString("book_isbn"),
                     rs.getString("book_title"),
                     rs.getString("book_author"),
@@ -94,7 +101,7 @@ public class DatabaseBookDAO implements BookDAO{
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Books book = new Books(
+                Books book = bookFactory.createBook(
                     rs.getString("book_isbn"),
                     rs.getString("book_title"),
                     rs.getString("book_author"),
