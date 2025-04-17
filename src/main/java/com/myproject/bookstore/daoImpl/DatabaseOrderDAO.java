@@ -2,12 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.myproject.bookstore.factory;
+package com.myproject.bookstore.daoImpl;
 
+import com.myproject.bookstore.dao.OrderDAO;
 import com.myproject.bookstore.entity.Books;
 import com.myproject.bookstore.entity.CartItem;
 import com.myproject.bookstore.entity.Customers;
 import com.myproject.bookstore.entity.Orders;
+import com.myproject.bookstore.factory.OrderFactory;
 import com.myproject.bookstore.singleton.CartManager;
 import com.myproject.bookstore.singleton.DatabaseConnection;
 import java.sql.Connection;
@@ -25,6 +27,12 @@ import java.util.Map;
  * @author Tuan
  */
 public class DatabaseOrderDAO implements OrderDAO {
+    private final OrderFactory orderFactory;
+
+    public DatabaseOrderDAO(OrderFactory orderFactory) {
+        this.orderFactory = orderFactory;
+    }
+
     @Override
     public List<Orders> findOrdersByUser(int userId) {
         List<Orders> orders = new ArrayList<>();
@@ -35,7 +43,7 @@ public class DatabaseOrderDAO implements OrderDAO {
             orderStmt.setInt(1, userId);
             ResultSet rs = orderStmt.executeQuery();
             while (rs.next()) {
-                Orders order = new Orders(
+                Orders order = orderFactory.createOrder(
                         rs.getInt("orderid"),
                         rs.getBigDecimal("amount"),
                         rs.getDate("date"),
@@ -205,7 +213,7 @@ public class DatabaseOrderDAO implements OrderDAO {
         try (Connection conn = DatabaseConnection.getInstance(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, status);
             stmt.setInt(2, orderId);
-            return true;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

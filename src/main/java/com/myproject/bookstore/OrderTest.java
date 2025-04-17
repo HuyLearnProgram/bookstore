@@ -7,12 +7,16 @@ package com.myproject.bookstore;
 import com.myproject.bookstore.entity.Books;
 import com.myproject.bookstore.entity.CartItem;
 import com.myproject.bookstore.entity.Orders;
-import com.myproject.bookstore.factory.BookDAO;
+import com.myproject.bookstore.dao.BookDAO;
 import com.myproject.bookstore.factory.BookFactory;
-import com.myproject.bookstore.factory.DatabaseBookDAO;
-import com.myproject.bookstore.factory.DatabaseOrderDAO;
+import com.myproject.bookstore.daoImpl.DatabaseBookDAO;
+import com.myproject.bookstore.daoImpl.DatabaseOrderDAO;
 import com.myproject.bookstore.factory.DefaultBookFactory;
-import com.myproject.bookstore.factory.OrderDAO;
+import com.myproject.bookstore.dao.OrderDAO;
+import com.myproject.bookstore.factory.BookDAOFactory;
+import com.myproject.bookstore.factory.DefaultOrderFactory;
+import com.myproject.bookstore.factory.OrderDAOFactory;
+import com.myproject.bookstore.factory.OrderFactory;
 import com.myproject.bookstore.singleton.CartManager;
 import java.util.Map;
 
@@ -23,8 +27,9 @@ import java.util.Map;
 public class OrderTest {
     public static void main(String[] args) {
         BookFactory factory = new DefaultBookFactory();
-        BookDAO bookDAO = new DatabaseBookDAO(factory);
-        OrderDAO orderDAO = new DatabaseOrderDAO();
+        BookDAO bookDAO = BookDAOFactory.createDAO("database",factory);
+        OrderFactory orderFactory = new DefaultOrderFactory();
+        OrderDAO orderDAO = OrderDAOFactory.createDAO("database", orderFactory);
         CartManager cartManager = CartManager.getInstance();
 
         // Tạo sách

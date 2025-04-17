@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.myproject.bookstore.factory;
+package com.myproject.bookstore.daoImpl;
 
+import com.myproject.bookstore.dao.BookDAO;
 import com.myproject.bookstore.entity.Books;
+import com.myproject.bookstore.factory.BookFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,12 +18,15 @@ import java.util.stream.Collectors;
 public class MockBookDAO implements BookDAO {
 
     private List<Books> books = new ArrayList<>();
+    private final BookFactory bookFactory;
 
     // Constructor mẫu khởi tạo dữ liệu
-    public MockBookDAO() {
-        books.add(new Books("111", "Effective Java", "Joshua Bloch", "", "Best practices for Java", 50.0));
-        books.add(new Books("222", "Clean Code", "Robert C. Martin", "", "Guide to writing clean code", 45.0));
-        books.add(new Books("333", "Design Patterns", "Gang of Four", "", "Classic design patterns book", 60.0));
+    public MockBookDAO(BookFactory bookFactory) {
+        this.bookFactory = bookFactory;
+        
+        books.add(bookFactory.createBook("111", "Effective Java", "Joshua Bloch", "", "Best practices for Java", 50.0));
+        books.add(bookFactory.createBook("222", "Clean Code", "Robert C. Martin", "", "Guide to writing clean code", 45.0));
+        books.add(bookFactory.createBook("333", "Design Patterns", "Gang of Four", "", "Classic design patterns book", 60.0));
     }
 
     @Override

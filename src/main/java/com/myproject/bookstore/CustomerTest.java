@@ -7,12 +7,14 @@ package com.myproject.bookstore;
 import com.myproject.bookstore.entity.Books;
 import com.myproject.bookstore.entity.Customers;
 import com.myproject.bookstore.entity.Orders;
-import com.myproject.bookstore.factory.CustomerDAO;
-import com.myproject.bookstore.factory.DatabaseCustomerDAO;
-import com.myproject.bookstore.factory.DatabaseOrderDAO;
-import com.myproject.bookstore.factory.OrderDAO;
-import java.util.AbstractList;
-import java.util.ArrayList;
+import com.myproject.bookstore.dao.CustomerDAO;
+import com.myproject.bookstore.factory.CustomerDAOFactory;
+import com.myproject.bookstore.factory.CustomerFactory;
+import com.myproject.bookstore.factory.DefaultCustomerFactory;
+import com.myproject.bookstore.dao.OrderDAO;
+import com.myproject.bookstore.factory.DefaultOrderFactory;
+import com.myproject.bookstore.factory.OrderDAOFactory;
+import com.myproject.bookstore.factory.OrderFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +25,14 @@ import java.util.Map;
 public class CustomerTest {
 
     public static void main(String[] args) {
-        CustomerDAO customerDAO = new DatabaseCustomerDAO();
-        OrderDAO orderDAO = new DatabaseOrderDAO();
+        // Sử dụng Factory để tạo CustomerDAO
+        CustomerFactory customerFactory = new DefaultCustomerFactory();
+        CustomerDAO customerDAO = CustomerDAOFactory.createDAO("database", customerFactory);
+        OrderFactory orderFactory = new DefaultOrderFactory();
 
-        List<Customers> allCustomer = new ArrayList<>();
-        allCustomer = customerDAO.findAllCustomer();
+        OrderDAO orderDAO = OrderDAOFactory.createDAO("database", orderFactory);
+
+        List<Customers> allCustomer = customerDAO.findAllCustomer();
         System.out.println("All customer:");
         System.out.printf("%-5s %-20s %-30s %-15s %-18s %-15s%n",
                 "CustomerID", "name", "Address", "City", "Zip code", "Country");
@@ -41,6 +46,8 @@ public class CustomerTest {
                     customer.getZipCode(),
                     customer.getCountry());
         }
+
+        // Tạo customer mới
         Customers newCustomer = new Customers();
         newCustomer.setName("Thanh Ha");
         newCustomer.setCity("Sai Gon");
@@ -48,17 +55,15 @@ public class CustomerTest {
         newCustomer.setZipCode("1145-654-98");
         newCustomer.setAddress("Quan 9");
 
-        //Tao 1 customer
         boolean successCreateNewCustomer = customerDAO.createUser(newCustomer);
         if (successCreateNewCustomer) {
             System.out.println("Success create new customer");
         } else {
             System.out.println("Error");
         }
-        
-        List<Orders> orderByCustomer = new ArrayList<>();
+
         int userId = 1;
-        orderByCustomer = orderDAO.findOrdersByUser(userId);
+        List<Orders> orderByCustomer = orderDAO.findOrdersByUser(userId);
         System.out.println("All order by customer has ID = " + userId + ":");
         System.out.printf("%-11s %-12s %-15s %-15s %-10s%n",
                 "OrderID", "CustomerID", "Date order", "Total amount", "Status");
@@ -72,10 +77,7 @@ public class CustomerTest {
                     order.getStatus());
         }
 
-        List<Books> bookByOrder = new ArrayList<>();
         int orderId = 6;
-
-
         Map<Books, Integer> booksInOrder = orderDAO.findBooksWithQuantityByOrder(orderId);
 
         System.out.println("Book in order ID = " + orderId + ":");
@@ -96,6 +98,6 @@ public class CustomerTest {
         }
 
         System.out.println("All book in order: " + totalQuantity);
-
+        
     }
 }

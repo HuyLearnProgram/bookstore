@@ -4,6 +4,10 @@
  */
 package com.myproject.bookstore.factory;
 
+import com.myproject.bookstore.daoImpl.MockBookDAO;
+import com.myproject.bookstore.daoImpl.DatabaseBookDAO;
+import com.myproject.bookstore.dao.BookDAO;
+
 /**
  *
  * @author pc
@@ -15,7 +19,7 @@ public class BookDAOFactory {
                 return new DatabaseBookDAO(factory);
             }
             case "mock" -> { 
-                return new MockBookDAO();
+                return new MockBookDAO(factory);
             }
 
             default -> {
