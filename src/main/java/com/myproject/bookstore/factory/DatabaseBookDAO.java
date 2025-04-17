@@ -24,6 +24,10 @@ public class DatabaseBookDAO implements BookDAO{
     public DatabaseBookDAO(BookFactory bookFactory) {
         this.bookFactory = bookFactory;
     }
+
+    public DatabaseBookDAO() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     // ✅ Cập nhật sách
     @Override
